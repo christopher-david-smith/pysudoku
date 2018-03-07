@@ -12,6 +12,39 @@ class SudokuSolver:
         self.original = copy.deepcopy(sudoku)
         self.rows = copy.deepcopy(sudoku)
 
+    def pretty_print(self):
+        '''
+        '''
+        # Decoration
+        border_decoration = " +------+------+------+"
+        filled_row = " |{} {} {} |{} {} {} |{} {} {} |"
+
+        output = ["", border_decoration]
+
+        for row_index, row in enumerate(self.rows):
+
+            numbers = []
+            for column_index, number in enumerate(row):
+
+                if self.original[row_index][column_index] != self.rows[row_index][column_index]:
+                    number = colored(number, 'red', attrs=['bold'])
+
+                if number == 0:
+                    number = "."
+
+                numbers.append(number)
+
+            output.append(filled_row.format(*numbers))
+
+            if row_index in [2, 5]:
+                output.append(border_decoration)
+
+        output.append(border_decoration)
+        output.append("")
+
+        for line in output:
+            print(line)
+
     def is_valid(self, rows=None):
         '''
         '''
@@ -32,6 +65,40 @@ class SudokuSolver:
 
         return True
 
+    def solve(self, method="backtracking"):
+        '''
+        '''
+        if method == "backtracking":
+            self.rows = self._solve_with_backtracking(self.rows)[0]
+
+    def _solve_with_backtracking(self, rows):
+        '''
+        '''
+        for row_index, row in enumerate(rows):
+            for col_index, number in enumerate(row):
+                if number is 0:
+
+                    possible_values = self._return_missing_numbers(rows, row_index, col_index)
+                    if not possible_values:
+                        possible_values = range(1, 10)
+
+                    for possible_value in possible_values:
+
+                        rows[row_index][col_index] = possible_value
+                        valid_guess = self.is_valid(rows)
+
+                        if valid_guess:
+                            tmp_rows, valid = self._solve_with_backtracking(rows)
+
+                            if valid is True:
+                                return tmp_rows, True
+
+                        if possible_value is possible_values[-1]:
+                            rows[row_index][col_index] = 0
+                            return rows, False
+
+        return rows, True
+
     def _transpose(self, list_to_transpose):
         '''
         '''
@@ -49,39 +116,6 @@ class SudokuSolver:
                 seen_numbers.append(number)
 
         return True
-
-    def brute_force(self):
-        '''
-        '''
-        self.rows = self._solve_recursively(self.rows)[0]
-
-    def _solve_recursively(self, rows):
-        '''
-        '''
-        for row_index, row in enumerate(rows):
-            for col_index, number in enumerate(row):
-                if number is 0:
-
-                    possible_values = self._return_missing_numbers(rows, row_index, col_index)
-                    if not possible_values:
-                        possible_values = range(1, 10)
-
-                    for possible_value in possible_values:
-
-                        rows[row_index][col_index] = possible_value
-                        valid_guess = self.is_valid(rows)
-
-                        if valid_guess:
-                            tmp_rows, valid = self._solve_recursively(rows)
-
-                            if valid is True:
-                                return tmp_rows, True
-
-                        if possible_value is possible_values[-1]:
-                            rows[row_index][col_index] = 0
-                            return rows, False
-
-        return rows, True
 
     def _return_square(self, rows, row_index, column_index):
         '''
@@ -114,37 +148,3 @@ class SudokuSolver:
                 missing_numbers.append(number)
 
         return missing_numbers
-
-    def pretty_print(self):
-
-        '''
-        '''
-        # Decoration
-        border_decoration = " +------+------+------+"
-        filled_row = " |{} {} {} |{} {} {} |{} {} {} |"
-
-        output = ["", border_decoration]
-
-        for row_index, row in enumerate(self.rows):
-
-            numbers = []
-            for column_index, number in enumerate(row):
-
-                if self.original[row_index][column_index] != self.rows[row_index][column_index]:
-                    number = colored(number, 'red', attrs=['bold'])
-
-                if number == 0:
-                    number = "."
-
-                numbers.append(number)
-
-            output.append(filled_row.format(*numbers))
-
-            if row_index in [2, 5]:
-                output.append(border_decoration)
-
-        output.append(border_decoration)
-        output.append("")
-
-        for line in output:
-            print(line)

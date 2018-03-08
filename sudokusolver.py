@@ -15,35 +15,40 @@ class SudokuSolver:
     def pretty_print(self):
         '''
         '''
+        self._print_sudoku(self.rows)
+
+    def _print_sudoku(self, rows, row_index=None, cell_index=None):
+        '''
+        '''
+        numbers = []
+        for r, row in enumerate(rows):
+            for c, cell_value in enumerate(row):
+
+                original_cell = self.original[r][c]
+                colour = 'white'
+                attributes = []
+
+                # Colour highlighted cell
+                if (r is row_index) and (c is cell_index):
+                    colour = 'red'
+                    attributes = ['bold']
+
+                # Colour found numbers
+                elif original_cell is not cell_value:
+                    colour = 'green'
+                    attributes = ['bold']
+
+                numbers.append(colored("{} ".format(cell_value), colour, attrs=attributes))
+
         # Decoration
-        border_decoration = " +------+------+------+"
-        filled_row = " |{} {} {} |{} {} {} |{} {} {} |"
+        border_output = " +------+------+------+\n"
+        row_output = " |{}{}{}|{}{}{}|{}{}{}|\n"
 
-        output = ["", border_decoration]
+        # Generate and print sudoku board
+        output = ((border_output + (row_output * 3)) * 3 + border_output)
+        print(output.format(*numbers))
 
-        for row_index, row in enumerate(self.rows):
-
-            numbers = []
-            for column_index, number in enumerate(row):
-
-                if self.original[row_index][column_index] != self.rows[row_index][column_index]:
-                    number = colored(number, 'red', attrs=['bold'])
-
-                if number == 0:
-                    number = "."
-
-                numbers.append(number)
-
-            output.append(filled_row.format(*numbers))
-
-            if row_index in [2, 5]:
-                output.append(border_decoration)
-
-        output.append(border_decoration)
-        output.append("")
-
-        for line in output:
-            print(line)
+        return
 
     def is_valid(self, rows=None):
         '''

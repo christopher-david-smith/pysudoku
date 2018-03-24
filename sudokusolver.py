@@ -38,7 +38,8 @@ class SudokuSolver:
                     colour = 'green'
                     attributes = ['bold']
 
-                numbers.append(colored("{} ".format(cell_value), colour, attrs=attributes))
+                numbers.append(colored("{} ".format(cell_value), colour,
+                               attrs=attributes))
 
         # Decoration
         border_output = " +------+------+------+\n"
@@ -83,7 +84,8 @@ class SudokuSolver:
             for col_index, number in enumerate(row):
                 if number is 0:
 
-                    possible_values = self._return_missing_numbers(rows, row_index, col_index)
+                    possible_values = self._return_missing_numbers(
+                        rows, row_index, col_index)
                     if not possible_values:
                         possible_values = range(1, 10)
 
@@ -93,7 +95,8 @@ class SudokuSolver:
                         valid_guess = self.is_valid(rows)
 
                         if valid_guess:
-                            tmp_rows, valid = self._solve_with_backtracking(rows)
+                            tmp_rows, valid = self._solve_with_backtracking(
+                                rows)
 
                             if valid is True:
                                 return tmp_rows, True

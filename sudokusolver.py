@@ -138,7 +138,7 @@ class SudokuSolver:
 
     def _return_missing_numbers(self, rows, row_index, column_index):
         '''
-        Return missing numbers
+        Return list of possible values for a given cell
 
         Args:
             rows (list): List of lists, each one containing a row of the Sudoku

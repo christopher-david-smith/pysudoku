@@ -84,8 +84,9 @@ class SudokuSolver:
 
                     possible_values = self._return_missing_numbers(
                         rows, row_index, col_index)
+
                     if not possible_values:
-                        possible_values = range(1, 10)
+                        return rows, False
 
                     for possible_value in possible_values:
 
@@ -99,9 +100,8 @@ class SudokuSolver:
                             if valid is True:
                                 return tmp_rows, True
 
-                        if possible_value is possible_values[-1]:
-                            rows[row_index][col_index] = 0
-                            return rows, False
+                    rows[row_index][col_index] = 0
+                    return rows, False
 
         return rows, True
 

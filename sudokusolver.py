@@ -7,10 +7,14 @@ class SudokuSolver:
     '''
 
     def __init__(self, sudoku):
-        '''
-        '''
         self.original = copy.deepcopy(sudoku)
         self.rows = copy.deepcopy(sudoku)
+
+    def solve(self, method="backtracking"):
+        '''
+        '''
+        if method == "backtracking":
+            self.rows = self._solve_with_backtracking(self.rows)[0]
 
     def pretty_print(self):
         '''
@@ -51,7 +55,7 @@ class SudokuSolver:
 
         return
 
-    def is_valid(self, rows=None):
+    def _is_valid(self, rows=None):
         '''
         '''
         if rows is None:
@@ -71,12 +75,6 @@ class SudokuSolver:
 
         return True
 
-    def solve(self, method="backtracking"):
-        '''
-        '''
-        if method == "backtracking":
-            self.rows = self._solve_with_backtracking(self.rows)[0]
-
     def _solve_with_backtracking(self, rows):
         '''
         '''
@@ -92,7 +90,7 @@ class SudokuSolver:
                     for possible_value in possible_values:
 
                         rows[row_index][col_index] = possible_value
-                        valid_guess = self.is_valid(rows)
+                        valid_guess = self._is_valid(rows)
 
                         if valid_guess:
                             tmp_rows, valid = self._solve_with_backtracking(
@@ -140,19 +138,22 @@ class SudokuSolver:
 
     def _return_missing_numbers(self, rows, row_index, column_index):
         '''
+        Return missing numbers
+
+        Args:
+            rows (list): List of lists, each one containing a row of the Sudoku
+            row_index (int): Index of row
+            column_index (int): Index of column
+
+        Returns:
+            list: List of possible values for the given cell
         '''
         columns = self._transpose(rows)
         square = self._return_square(rows, row_index, column_index)
 
-        seen_numbers = []
-        for numbers in [rows[row_index], columns[column_index], square]:
-            for number in numbers:
-                if number is not 0 and number not in seen_numbers:
-                    seen_numbers.append(number)
-
         missing_numbers = []
         for number in range(1, 10):
-            if number not in seen_numbers:
+            if number not in rows[row_index] + columns[column_index] + square:
                 missing_numbers.append(number)
 
         return missing_numbers

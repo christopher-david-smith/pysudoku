@@ -50,6 +50,9 @@ class Sudoku:
             
             if not updated:
                 break
+        
+        if not self.solved:
+            self.solve_with_backtracking(interactive=interactive)
 
     def solve_cell(self, cell, interactive=False):
         """
@@ -75,6 +78,40 @@ class Sudoku:
 
             return update
     
+    def solve_with_backtracking(self, interactive=False):
+        """
+        Solve the Sudoku using only a backtracking algorithm, attempting to 
+        solve each cell in turn by taking the first possible candidate, then
+        continuing onto the next cell. When a point is reached where we cannot 
+        continue we backtrack and choose the next possible candidate.
+
+        arguments
+        ---------
+        interactive : bool
+            Run interactively and print verbose messages at each step
+        """
+
+        for cell in self.cells:
+            if cell.solved or cell.value != 0:
+                continue
+            
+            related_cell_values = [c.value for c in cell.related_cells]
+            for candidate in cell.candidates:
+                if candidate not in related_cell_values:
+                    with InteractiveLogger(self, cell, interactive) as logger:
+                        logger.log(f"Updating {repr(cell)} to {candidate}")
+                        cell.value = candidate
+
+                    if self.solve_with_backtracking(interactive):
+                        return True
+            
+            with InteractiveLogger(self, cell, interactive) as logger:
+                logger.log(f"No valid candidates for {repr(cell)} - Backtracking")
+                cell.value = 0
+                return False
+
+        return True
+
     def _identify_sole_candidate(self, cell, logger, update):
         """
         Attempt to update the specified Cell by looking for a sole candidate.

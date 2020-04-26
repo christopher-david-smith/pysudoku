@@ -101,6 +101,7 @@ class Sudoku:
                     with InteractiveLogger(self, cell, interactive) as logger:
                         logger.log(f"Updating {repr(cell)} to {candidate}")
                         cell.value = candidate
+                        cell.changed = True
 
                     if self.solve_with_backtracking(interactive):
                         return True
@@ -108,6 +109,7 @@ class Sudoku:
             with InteractiveLogger(self, cell, interactive) as logger:
                 logger.log(f"No valid candidates for {repr(cell)} - Backtracking")
                 cell.value = 0
+                cell.changed = False
                 return False
 
         return True

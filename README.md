@@ -1,35 +1,35 @@
-# SudokuSolver
-Sudoku solver using Python3 and bruteforce
+# pysudoku
 
-### Usage
-```py
->>> from sudokusolver import SudokuSolver
->>> solver = SudokuSolver([
-...     [2, 0, 0, 8, 0, 4, 0, 0, 6],
-...     [0, 0, 6, 0, 0, 0, 5, 0, 0],
-...     [0, 7, 4, 0, 0, 0, 9, 2, 0],
-...     [3, 0, 0, 0, 4, 0, 0, 0, 7],
-...     [0, 0, 0, 3, 0, 5, 0, 0, 0],
-...     [4, 0, 0, 0, 6, 0, 0, 0, 9],
-...     [0, 1, 9, 0, 0, 0, 7, 4, 0],
-...     [0, 0, 8, 0, 0, 0, 2, 0, 0],
-...     [5, 0, 0, 6, 0, 8, 0, 0, 1]
-...])
->>> solver.solve()
->>> solver.pretty_print()
+`pysudoku` is a small Python3 package designed to solve Sudoku puzzles using a
+range of different techniques. If these techniques fail to solve the puzzle,
+we fall back to using a backtracking algorith.
 
- +------+------+------+
- |2 5 3 |8 9 4 |1 7 6 |
- |1 9 6 |2 3 7 |5 8 4 |
- |8 7 4 |1 5 6 |9 2 3 |
- +------+------+------+
- |3 8 1 |9 4 2 |6 5 7 |
- |9 6 7 |3 8 5 |4 1 2 |
- |4 2 5 |7 6 1 |8 3 9 |
- +------+------+------+
- |6 1 9 |5 2 3 |7 4 8 |
- |7 3 8 |4 1 9 |2 6 5 |
- |5 4 2 |6 7 8 |3 9 1 |
- +------+------+------+
+### Quick Start
 
+Loading and solving a Sodoku is easy;
+
+```python
+>>> import pysudoku
+>>> sudoku = pysudoku.load([
+  [2, 0, 0, 8, 0, 4, 0, 0, 6],
+  [0, 0, 6, 0, 0, 0, 5, 0, 0],
+  [0, 7, 4, 0, 0, 0, 9, 2, 0],
+  [3, 0, 0, 0, 4, 0, 0, 0, 7],
+  [0, 0, 0, 3, 0, 5, 0, 0, 0],
+  [4, 0, 0, 0, 6, 0, 0, 0, 9],
+  [0, 1, 9, 0, 0, 0, 7, 4, 0],
+  [0, 0, 8, 0, 0, 0, 2, 0, 0],
+  [5, 0, 0, 6, 0, 8, 0, 0, 1]])
+>>> sudoku.solve()
 ```
+
+To help get things up and running quickly there are `easy`, `medium`, and `hard`
+puzzles included within the `pysudoku` package.
+
+```python
+>>> import pysudoku
+>>> sudoku = pysudoku.load(pysudoku.examples.easy)
+>>> sudoku.solve()
+```
+
+### Running interactively

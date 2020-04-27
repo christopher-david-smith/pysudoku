@@ -33,3 +33,9 @@ puzzles included within the `pysudoku` package.
 ```
 
 ### Running interactively
+Both the `solve` and `solve_with_backtracking` functions take an optional
+`interactive` keyword argument. By calling `solve(interactive=True)` the Sudoku
+board will be printed at each step along with so me information about the cell
+and what decisions are being made.
+
+[![asciicast](https://asciinema.org/a/324403.svg)](https://asciinema.org/a/324403)

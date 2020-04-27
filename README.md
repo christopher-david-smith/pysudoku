@@ -2,7 +2,7 @@
 
 `pysudoku` is a small Python3 package designed to solve Sudoku puzzles using a
 range of different techniques. If these techniques fail to solve the puzzle,
-we fall back to using a backtracking algorith.
+we fall back to using a backtracking algorithm.
 
 ### Quick Start
 

@@ -28,7 +28,7 @@ class Sudoku:
         """
         return True if all([c.solved for c in self.cells]) else False
 
-    def solve(self, interactive=False):
+    def solve(self, fallback_to_bruteforce=True, interactive=False):
         """
         Attempt to solve the Sudoku by using a range of techniques, falling
         back to using a backtracking algorithm if we fail
@@ -51,8 +51,10 @@ class Sudoku:
             if not updated:
                 break
         
-        if not self.solved:
+        if not self.solved and fallback_to_bruteforce:
             self.solve_with_backtracking(interactive=interactive)
+
+        return self.solved
 
     def solve_cell(self, cell, interactive=False):
         """
@@ -60,7 +62,7 @@ class Sudoku:
 
         arguments
         ---------
-        interactive : boolean   
+        interactive : boolean
             Run interactively and print verbose messages at each step
         """
 
@@ -77,7 +79,7 @@ class Sudoku:
                 logger.log(f"No action taken on {repr(cell)}")
 
             return update
-    
+
     def solve_with_backtracking(self, interactive=False):
         """
         Solve the Sudoku using only a backtracking algorithm, attempting to 
@@ -94,7 +96,7 @@ class Sudoku:
         for cell in self.cells:
             if cell.solved or cell.value != 0:
                 continue
-            
+
             related_cell_values = [c.value for c in cell.related_cells]
             for candidate in cell.candidates:
                 if candidate not in related_cell_values:
@@ -105,7 +107,7 @@ class Sudoku:
 
                     if self.solve_with_backtracking(interactive):
                         return True
-            
+
             with InteractiveLogger(self, cell, interactive) as logger:
                 logger.log(f"No valid candidates for {repr(cell)} - Backtracking")
                 cell.value = 0
@@ -242,12 +244,12 @@ class Sudoku:
                
                 if cells_to_update:
                     logger.log(f"Naked subset {combination} found in {group}")
-                    naked_subset_found = True
 
                 for value in combination:
-                    self._remove_candidate_from_cells(cells_to_update, value, logger)
-        
-        return naked_subset_found       
+                    if self._remove_candidate_from_cells(cells_to_update, value, logger):
+                        naked_subset_found = True
+
+        return naked_subset_found
 
     def _identify_hidden_subsets(self, cell, logger, update):
         """
@@ -319,10 +321,14 @@ class Sudoku:
     def _remove_candidate_from_cells(self, cells, value, logger):
         """
         """
+        action_taken = False
         for cell in cells:
             if value in cell.candidates:
                 cell.remove_candidate(value)
                 logger.log(f"Removed '{value}' from {repr(cell)}")
+                action_taken = True
+
+        return action_taken
 
     def __str__(self):
         return (

@@ -6,7 +6,7 @@ class InteractiveLogger:
         self.cell = cell
         self.interactive = interactive
         self.messages = ["Running in interactive mode, press enter to continue"]
-    
+
     def __enter__(self):
         return self
 
@@ -18,7 +18,7 @@ class InteractiveLogger:
         os.system("clear")
         with self.cell.highlighted():
             lines_in_sudoku = str(self.sudoku).split("\n")
-        
+
         line_count = max(len(lines_in_sudoku), len(self.messages))
 
         print()
@@ -30,17 +30,16 @@ class InteractiveLogger:
                 sudoku_line = lines_in_sudoku[index]
             except IndexError:
                 sudoku_line = " " * 25
-            
+
             try:
                 message = self.messages[index]
             except IndexError:
                 message = ""
-            
+
             print(f"  {sudoku_line}  |  {message}")
-        
+
         input()
 
     def log(self, message):
 
         self.messages.append(message)
-        

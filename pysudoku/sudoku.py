@@ -10,7 +10,7 @@ class Sudoku:
         arguments
         ---------
         sudoku : list
-            A two dimensional list which represents a partially complete 
+            A two dimensional list which represents a partially complete
             sudoku grid
         """
 
@@ -19,7 +19,7 @@ class Sudoku:
         for r in range(9):
             for c in range(9):
                 self.cells.append(Cell(r, c, sudoku[r][c], self.cells))
-    
+
     @property
     def solved(self):
         """
@@ -35,7 +35,7 @@ class Sudoku:
 
         arguments
         ---------
-        interactive : boolean 
+        interactive : boolean
             Run interactively and print verbose messages at each step
         """
 
@@ -47,10 +47,10 @@ class Sudoku:
 
                 if self.solve_cell(cell, interactive):
                     updated = True
-            
+
             if not updated:
                 break
-        
+
         if not self.solved and fallback_to_bruteforce:
             self.solve_with_backtracking(interactive=interactive)
 
@@ -82,7 +82,7 @@ class Sudoku:
 
     def solve_with_backtracking(self, interactive=False):
         """
-        Solve the Sudoku using only a backtracking algorithm, attempting to 
+        Solve the Sudoku using only a backtracking algorithm, attempting to
         solve each cell in turn by taking the first possible candidate, then
         continuing onto the next cell. When a point is reached where we cannot 
         continue we backtrack and choose the next possible candidate.
@@ -119,18 +119,18 @@ class Sudoku:
     def _identify_sole_candidate(self, cell, logger, update):
         """
         Attempt to update the specified Cell by looking for a sole candidate.
-        A sole candidate is when there exists only one possible candidate 
+        A sole candidate is when there exists only one possible candidate
         that can go in this Cell.
 
         arguments
         ---------
-        cell : Cell                  
+        cell : Cell
             Cell object to be updated
 
-        logger : InteractiveLogger     
+        logger : InteractiveLogger
             InteractiveLogger object used to log messages
 
-        update : boolean  
+        update : boolean
             Boolean to indicate if the Cell has been previously updated
         """
 
@@ -144,7 +144,7 @@ class Sudoku:
 
     def _identify_unique_candidate(self, cell, logger, update):
         """
-        Attempt to update the specified Cell by looking for a unique 
+        Attempt to update the specified Cell by looking for a unique
         candidate. A unique candidate is when a number can only exist in this
         Cell in the row, column, or square to which this Cell belongs.
 
@@ -152,7 +152,7 @@ class Sudoku:
         ---------
         cell : Cell
             Cell object to be updated
-        
+
         logger : InteractiveLogger
             InteractiveLogger object used to log messages
 
@@ -163,7 +163,7 @@ class Sudoku:
             return True
 
         for value in cell.candidates:
-            
+
             for group, related_cells in cell.related_cells_as_dict.items():
 
                 # Collate list of possible values for this row/column/square
@@ -171,7 +171,7 @@ class Sudoku:
                 for related_cell in related_cells:
                     for candidate in related_cell.candidates:
                         possible_candidates.append(candidate)
-                
+
                 # If the value can't exist in the row/column/square then it
                 # must be unique to this cell
                 if value not in possible_candidates:
@@ -181,9 +181,9 @@ class Sudoku:
 
     def _identify_naked_subsets(self, cell, logger, update):
         """
-        Look for naked subsets. A naked subset exists when there are at least 
-        two cells that can only contain the same range of candidates. In this 
-        case those candidates can be removed from all other cells in the row, 
+        Look for naked subsets. A naked subset exists when there are at least
+        two cells that can only contain the same range of candidates. In this
+        case those candidates can be removed from all other cells in the row,
         column, or square.
 
         arguments
@@ -197,16 +197,16 @@ class Sudoku:
         update : boolean
             Boolean to indicate if the Cell has been previously updated
         """
-        
+
         if update:
             return True
-       
+
         # Collate list of possible combinations
         combinations = []
         for subset in range(2, 4):
             if len(cell.candidates) not in range(2, subset + 1):
                 continue
-            
+
             tmp = list(itertools.combinations(cell.candidates, subset))
             combinations = combinations + tmp
 
@@ -220,28 +220,28 @@ class Sudoku:
                 for related_cell in related_cells:
                     if len(related_cell.candidates) not in range(2, len(combination)):
                         continue
-                    
+
                     naked_cell_found = True
                     for value in related_cell.candidates:
                         if value not in combination:
                             naked_cell_found = False
-                    
+
                     if naked_cell_found:
                         matches.append(related_cell)
-                
+
                 # The number of naked cells must match the number of values 
                 # in the combination. For example a naked pair will have two
                 # cells which can only contain (the same) two numbers.
                 if len(matches) != len(combination):
                     continue
-                
+
                 cells_to_update = []
                 for related_cell in related_cells:
                     if related_cell in matches or related_cell.solved:
                         continue
-                    
+
                     cells_to_update.append(related_cell)
-               
+
                 if cells_to_update:
                     logger.log(f"Naked subset {combination} found in {group}")
 
@@ -271,7 +271,7 @@ class Sudoku:
 
         if update:
             return True
-       
+
         # Collate list of possible combinations
         combinations = []
         for subset in range(2, 4):
@@ -283,15 +283,15 @@ class Sudoku:
             for combination in combinations:
                 matches = [cell]
                 for related_cell in related_cells:
-                    
+
                     hidden_cell_found = False
                     for value in related_cell.candidates:
                         if value in combination:
                             hidden_cell_found = True
-                    
+
                     if hidden_cell_found:
                         matches.append(related_cell)
-                
+
                 if len(matches) != len(combination):
                     continue
 

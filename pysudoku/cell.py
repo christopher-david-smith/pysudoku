@@ -14,10 +14,10 @@ class Cell:
         column : int
             Column to which this cell belongs
 
-        value : int 
+        value : int
             The inital value of the cell
 
-        cells : list 
+        cells : list
             Other cells that belong to the Sudoku board
         """
 
@@ -46,9 +46,9 @@ class Cell:
                 values = [c.value for c in self.related_cells if c.solved]
                 if value not in values and value not in self._candidates:
                     self._candidates.append(value)
-        
+
         return self._candidates
-    
+
     def update_value(self, value, solved=False):
         """
         """
@@ -66,7 +66,7 @@ class Cell:
 
         if value in self.candidates:
             self._candidates.remove(value)
-        
+
     @property
     def related_cells(self):
         """
@@ -77,7 +77,7 @@ class Cell:
         for list_of_cells in self.related_cells_as_dict.values():
             for cell in list_of_cells:
                 cells.add(cell)
-        
+
         return cells
 
     @property
@@ -91,7 +91,7 @@ class Cell:
             'column': self.other_cells_in_column,
             'square': self.other_cells_in_square}
 
-        
+
     @property
     def other_cells_in_row(self):
         """
@@ -105,7 +105,7 @@ class Cell:
                 continue
 
             cells.append(current_cell)
-        
+
         return cells
 
     @property
@@ -113,15 +113,15 @@ class Cell:
         """
         Get all the related cells in the same column as this Cell object
         """
-        
+
         cells = []
         indexes = [self._column + (9 * row) for row in range(9)]
         for index in indexes:
             if self._other_cells[index] == self:
                 continue
-            
+
             cells.append(self._other_cells[index])
-        
+
         return cells
 
     @property
@@ -129,13 +129,13 @@ class Cell:
         """
         Get all the related cells in the same square as this Cell object
         """
-        
+
         cells = []
         for r in range(3):
             for c in range(3):
                 row_index = self._row - (self._row % 3)
                 col_index = self._column - (self._column % 3)
-                
+
                 index = (9 * row_index) + col_index + (r * 9) + c
                 if self._other_cells[index] == self:
                     continue
@@ -143,7 +143,7 @@ class Cell:
                 cells.append(self._other_cells[index])
 
         return cells
-        
+
     @contextmanager
     def highlighted(self):
         """
@@ -157,7 +157,7 @@ class Cell:
     def __repr__(self):
         """
         """
-        
+
         return ("sudokusolver.Cell("
                 f"row={self._row}, "
                 f"column={self._column}, "
@@ -173,10 +173,10 @@ class Cell:
         cell_value = str(self.value)
         if self.value == 0:
             cell_value = "-"
-        
+
         if self._highlighted:
             return colored(cell_value, "blue")
-        
+
         if self.changed is True and self.solved is False:
             return colored(cell_value, "yellow")
 

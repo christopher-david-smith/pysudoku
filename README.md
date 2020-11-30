@@ -28,7 +28,7 @@ puzzles included within the `pysudoku` package.
 
 ```python
 >>> import pysudoku
->>> sudoku = pysudoku.load(pysudoku.examples.easy)
+>>> sudoku = pysudoku.boards.easy
 >>> sudoku.solve()
 ```
 

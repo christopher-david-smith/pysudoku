@@ -1,5 +1,5 @@
 from . import sudoku
-from . import examples
+from . import boards 
 
 def load(cells):
     return sudoku.Sudoku(cells)
